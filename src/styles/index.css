@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #4f46e5;
+  --secondary: #e0e7ff;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #0ea5e9;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --bg: #f8fafc;
+  --text-title: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+}
+
+body {
+  font-family: "Geist Mono", monospace;
+  background-color: var(--bg);
+}
