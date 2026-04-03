@@ -3,7 +3,7 @@ type ButtonProps = {
   label: string;
   icon?: React.ReactNode;
   variant?: "primary" | "secondary";
-  moreProps?: string;
+  className?: string;
   onClick?: () => void;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -13,7 +13,7 @@ export const Button = ({
   icon,
   onClick,
   variant = "primary",
-  moreProps: moreProps,
+  className = "",
 }: ButtonProps) => {
   const base = `px-4 border-none rounded-lg flex items-center justify-center gap-2 text-[var(--surface)] cursor-pointer`;
 
@@ -26,7 +26,7 @@ export const Button = ({
   return (
     <button
       type={type}
-      className={`${base} ${styles[variant]} ${moreProps ?? ""}`}
+      className={`${base} ${styles[variant]} ${className}`}
       onClick={onClick}
     >
       {icon && <span className="mr-1">{icon}</span>}
