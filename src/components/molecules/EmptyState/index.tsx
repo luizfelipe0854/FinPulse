@@ -16,18 +16,18 @@ export const EmptyState = ({
   return (
     <section className="flex flex-col items-center justify-center h-full gap-2">
       <img src={AlienShip} alt="Alien Ship" className="w-20 h-20 mb-2" />
-      <Text as="h2" variant="title">
+      <Text as="h2" variant="title" size="lg">
         {text}
       </Text>
       {redirectText && redirectButtonText && (
         <div className="flex flex-col items-center justify-center gap-2">
-          <Text as="p" variant="body">
+          <Text as="p" variant="body" size="sm">
             {redirectText}
           </Text>
           <Button
             label={redirectButtonText}
             onClick={() => {
-              alert("ta funcionano");
+              alert("ta funcionando");
             }}
             variant="primary"
           />

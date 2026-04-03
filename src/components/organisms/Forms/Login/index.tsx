@@ -12,15 +12,15 @@ export const Login = () => {
       aria-busy={isLoadingLogin}
     >
       <div className="flex flex-col gap-1 text-center">
-        <Text as="h1" variant="title">
+        <Text as="h1" variant="title" size="lg">
           Login
         </Text>
-        <Text as="p" variant="body">
-          Preencha os campos abaixo para fazer login.
+        <Text as="p" variant="body" size="sm">
+          Preencha os campos para fazer login.
         </Text>
       </div>
       <label className="flex flex-col gap-1">
-        <Text as="span" variant="body">
+        <Text as="span" variant="body" size="sm">
           E-mail:
         </Text>
         <Input
@@ -31,7 +31,7 @@ export const Login = () => {
         />
       </label>
       <label className="flex flex-col gap-1">
-        <Text as="span" variant="body">
+        <Text as="span" variant="body" size="sm">
           Senha:
         </Text>
         <Input
@@ -49,9 +49,9 @@ export const Login = () => {
           aria-busy={isLoadingLogin}
           type="submit"
           disabled={isLoadingLogin}
-          moreProps="w-full h-10"
+          className="w-full h-10"
         />
-        <Text as="span" variant="body" moreProps="mt-2 cursor-pointer">
+        <Text as="span" variant="body" size="sm" className="mt-2 cursor-pointer">
           <a onClick={() => navigate("/cadastro")}>
             Não possui conta? Cadastre-se
           </a>

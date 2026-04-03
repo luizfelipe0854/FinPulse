@@ -11,12 +11,12 @@ export const Card = ({ icon, title, content }: CardProps) => {
     <div className="max-w-[300px] min-w-[200px] border border-[var(--border)] p-2 rounded-lg bg-[var(--surface)] ">
       <div className="flex flex-row items-center justify-center gap-2">
         {icon}
-        <Text variant="title" as="h2">
+        <Text variant="title" size="lg" as="h2">
           {title}
         </Text>
       </div>
       <hr />
-      <Text variant="body" as="p" moreProps="text-center text-xl">
+      <Text variant="body" as="p" size="xl" className="text-center">
         {content}
       </Text>
     </div>

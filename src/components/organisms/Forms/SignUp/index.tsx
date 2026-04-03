@@ -12,21 +12,21 @@ export const SignUp = () => {
       aria-busy={isLoadingSignUp}
     >
       <div className="flex flex-col gap-1 text-center">
-        <Text as="h1" variant="title">
+        <Text as="h1" variant="title" size="lg">
           Criar Conta
         </Text>
-        <Text as="p" variant="body">
+        <Text as="p" variant="body" size="sm">
           Preencha os campos para criar sua conta.
         </Text>
       </div>
       <label className="flex flex-col gap-1">
-        <Text as="span" variant="body">
+        <Text as="span" variant="body" size="sm">
           Nome:
         </Text>
         <Input name="displayName" placeholder="Digite seu nome" type="text" />
       </label>
       <label className="flex flex-col gap-1">
-        <Text as="span" variant="body">
+        <Text as="span" variant="body" size="sm">
           E-mail:
         </Text>
         <Input
@@ -37,7 +37,7 @@ export const SignUp = () => {
         />
       </label>
       <label className="flex flex-col gap-1">
-        <Text as="span" variant="body">
+        <Text as="span" variant="body" size="sm">
           Senha:
         </Text>
         <Input
@@ -55,9 +55,9 @@ export const SignUp = () => {
           aria-busy={isLoadingSignUp}
           type="submit"
           disabled={isLoadingSignUp}
-          moreProps="w-full h-10"
+          className="w-full h-10"
         />
-        <Text as="span" variant="body" moreProps="mt-2 cursor-pointer">
+        <Text as="span" variant="body" size="sm" className="mt-2 cursor-pointer">
           <a onClick={() => navigate("/login")}>Já possui conta? Faça login</a>
         </Text>
       </div>
