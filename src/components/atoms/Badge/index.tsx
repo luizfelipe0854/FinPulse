@@ -14,7 +14,7 @@ export const Badge = ({ label, variant = "info" }: BadgeProps) => {
   };
 
   return (
-    <Text variant="badge" as="span" moreProps={`px-2 py-1 ${styles[variant]}`}>
+    <Text variant="badge" as="span" className={`px-2 py-1 ${styles[variant]}`}>
       {label}
     </Text>
   );
