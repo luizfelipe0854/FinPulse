@@ -2,10 +2,13 @@ import { FirebaseError } from "firebase/app";
 import { toastMessage } from "@/utils/toastMessage";
 import { firebaseErrors } from "@/constants/firebaseErrors";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signIn } from "@/services/firebase/auth";
 
 export const useLogin = () => {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+  const navigate = useNavigate();
+
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -27,8 +30,7 @@ export const useLogin = () => {
       setIsLoadingLogin(true);
       await signIn(data.email, data.password);
       toastMessage("Login realizado com sucesso!", "success");
-      data.email = "";
-      data.password = "";
+      navigate("/dashboard");
     } catch (error) {
       if (error instanceof FirebaseError) {
         toastMessage(firebaseErrors[error.code] ?? error.message, "error");
