@@ -13,21 +13,23 @@ export const Button = ({
   icon,
   onClick,
   variant = "primary",
-  moreProps: moreProps,
+  moreProps,
+  className,
+  ...rest
 }: ButtonProps) => {
   const base = `px-4 border-none rounded-lg flex items-center justify-center gap-2 text-[var(--surface)] cursor-pointer`;
 
   const styles = {
-    primary: "bg-[var(--primary)]  hover:bg-[var(--primary)]/90",
-
+    primary: "bg-[var(--primary)] hover:bg-[var(--primary)]/90",
     secondary: "bg-[var(--danger)] hover:bg-[var(--danger)]/90",
   };
 
   return (
     <button
       type={type}
-      className={`${base} ${styles[variant]} ${moreProps ?? ""}`}
+      className={`${base} ${styles[variant]} ${moreProps ?? ""} ${className ?? ""}`}
       onClick={onClick}
+      {...rest}
     >
       {icon && <span className="mr-1">{icon}</span>}
       {label}
