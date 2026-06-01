@@ -23,6 +23,11 @@ interface ICreateTransaction {
   date: Date;
 }
 
+export interface ITransaction extends ICreateTransaction {
+  id: string;
+  createdAt?: Date;
+}
+
 export const createUserCollection = async (
   uid: string,
   displayName: string,
@@ -67,13 +72,9 @@ export const createTransaction = async (
   return docRef.id;
 };
 
-//
-// GET TRANSACTIONS
-//
-
 export const getTransactions = async (
   uid: string,
-): Promise<ICreateTransaction[]> => {
+): Promise<ITransaction[]> => {
   if (!uid) throw new Error("uid is required");
 
   const ref = collection(db, "users", uid, "transactions");
@@ -97,10 +98,6 @@ export const getTransactions = async (
   });
 };
 
-//
-// DELETE TRANSACTION
-//
-
 export const deleteTransaction = async (
   uid: string,
   transactionId: string,
@@ -109,6 +106,69 @@ export const deleteTransaction = async (
   if (!transactionId) throw new Error("transactionId is required");
 
   const ref = doc(db, "users", uid, "transactions", transactionId);
+
+  await deleteDoc(ref);
+};
+
+export interface ICentro {
+  id: string;
+  nome: string;
+  icone: string;
+  cor: string;
+}
+
+interface ICreateCentro {
+  nome: string;
+  icone: string;
+  cor: string;
+}
+
+export const createCentro = async (
+  uid: string,
+  data: ICreateCentro,
+): Promise<string> => {
+  if (!uid) throw new Error("uid is required");
+  if (!data.nome) throw new Error("nome is required");
+
+  const ref = collection(db, "users", uid, "centros");
+
+  const docRef = await addDoc(ref, {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+
+  return docRef.id;
+};
+
+export const getCentros = async (uid: string): Promise<ICentro[]> => {
+  if (!uid) throw new Error("uid is required");
+
+  const ref = collection(db, "users", uid, "centros");
+
+  const q = query(ref, orderBy("nome", "asc"));
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      nome: data.nome,
+      icone: data.icone,
+      cor: data.cor,
+    };
+  });
+};
+
+export const deleteCentro = async (
+  uid: string,
+  centroId: string,
+): Promise<void> => {
+  if (!uid) throw new Error("uid is required");
+  if (!centroId) throw new Error("centroId is required");
+
+  const ref = doc(db, "users", uid, "centros", centroId);
 
   await deleteDoc(ref);
 };
