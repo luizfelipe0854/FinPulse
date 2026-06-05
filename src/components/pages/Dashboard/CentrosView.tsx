@@ -45,11 +45,21 @@ export const CentrosView = ({
         <Text as="h2" variant="title" size="lg">
           Centros de custo
         </Text>
+        {/* Mobile: apenas ícone */}
+        <button
+          type="button"
+          onClick={onNew}
+          className="sm:hidden h-9 w-9 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--surface)] cursor-pointer hover:bg-[var(--primary)]/90 transition-colors"
+          aria-label="Novo centro"
+        >
+          <Plus size={18} />
+        </button>
+        {/* Desktop: botão completo */}
         <Button
           label="Novo centro"
           icon={<Plus size={16} />}
           variant="primary"
-          className="h-9 text-sm"
+          className="hidden sm:flex h-9 text-sm"
           onClick={onNew}
         />
       </div>

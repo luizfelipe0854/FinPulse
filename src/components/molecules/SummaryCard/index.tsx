@@ -26,7 +26,7 @@ export const SummaryCard = ({
         <Text as="p" variant="muted" size="xs">
           {label}
         </Text>
-        <Text as="p" variant="title" size="lg" className={valueColor}>
+        <Text as="p" variant="title" size="lg" className={`${valueColor} truncate`}>
           {value}
         </Text>
       </div>

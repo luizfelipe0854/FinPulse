@@ -33,14 +33,16 @@ export const DashboardView = ({
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <Text as="h2" variant="title" size="lg">
-            Transações recentes
+            <span className="sm:hidden">Transações</span>
+            <span className="hidden sm:inline">Transações recentes</span>
           </Text>
           <button
             type="button"
             onClick={onNavigateToLancamentos}
-            className="flex items-center gap-1 text-sm text-[var(--primary)] hover:underline cursor-pointer"
+            className="flex items-center gap-1 text-sm text-[var(--primary)] hover:underline cursor-pointer shrink-0"
           >
-            Ver todos os lançamentos
+            <span className="sm:hidden">Lançamentos</span>
+            <span className="hidden sm:inline">Ver todos os lançamentos</span>
             <ChevronRight size={16} />
           </button>
         </div>

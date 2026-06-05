@@ -20,7 +20,7 @@ export function NavButton({
     <button
       onClick={() => onClick(pageId)}
       className={clsx(
-        "relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-mono transition-all duration-200 cursor-pointer",
+        "relative flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-sm font-mono transition-all duration-200 cursor-pointer shrink-0 whitespace-nowrap",
         active
           ? "text-[var(--primary)] bg-[var(--primary)]/10 border border-[var(--primary)]/20"
           : "text-[var(--text-muted)] hover:text-[var(--text-body)] hover:bg-[var(--surface)] border border-transparent",

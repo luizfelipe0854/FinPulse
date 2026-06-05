@@ -31,7 +31,8 @@ export const TransactionRow = ({ transaction, onDelete }: TransactionRowProps) =
             {transaction.description}
           </Text>
           <Text as="p" variant="muted" size="xs">
-            {transaction.category} · {formatDate(transaction.date)}
+            <span className="hidden sm:inline">{transaction.category} · </span>
+            {formatDate(transaction.date)}
           </Text>
         </div>
       </div>

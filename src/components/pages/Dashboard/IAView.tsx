@@ -3,7 +3,7 @@ import { Text } from "@/components/atoms";
 
 export const IAView = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-24 gap-4">
+    <div className="flex flex-col items-center justify-center py-14 sm:py-24 gap-4">
       <div className="w-16 h-16 rounded-full bg-[var(--primary)]/10 flex items-center justify-center">
         <Sparkles size={32} className="text-[var(--primary)]" />
       </div>

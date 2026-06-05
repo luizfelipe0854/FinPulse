@@ -55,9 +55,10 @@ export const LancamentosView = ({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <Text as="h2" variant="title" size="lg">
-          Todos os lançamentos
+          <span className="sm:hidden">Lançamentos</span>
+          <span className="hidden sm:inline">Todos os lançamentos</span>
         </Text>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             type="button"
             onClick={() => exportTransactionsToExcel(transacoesFiltradas)}
@@ -66,11 +67,21 @@ export const LancamentosView = ({
           >
             <FileDown size={20} />
           </button>
+          {/* Mobile: apenas ícone */}
+          <button
+            type="button"
+            onClick={onNewTransaction}
+            className="sm:hidden h-9 w-9 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--surface)] cursor-pointer hover:bg-[var(--primary)]/90 transition-colors"
+            aria-label="Nova transação"
+          >
+            <Plus size={18} />
+          </button>
+          {/* Desktop: botão completo */}
           <Button
             label="Nova transação"
             icon={<Plus size={16} />}
             variant="primary"
-            className="h-9 text-sm"
+            className="hidden sm:flex h-9 text-sm"
             onClick={onNewTransaction}
           />
         </div>

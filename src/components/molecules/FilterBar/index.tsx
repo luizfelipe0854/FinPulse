@@ -30,7 +30,7 @@ export const FilterBar = ({
   const tipoLabels = { todos: "Todos", entrada: "Entradas", saida: "Saídas" };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
       <div className="flex gap-1">
         {(["todos", "entrada", "saida"] as TipoFiltro[]).map((tipo) => {
           const ativo = tipoFiltro === tipo;
@@ -51,50 +51,52 @@ export const FilterBar = ({
         })}
       </div>
 
-      <select
-        value={mesFiltro}
-        onChange={(e) => onMesChange(e.target.value)}
-        className="h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
-      >
-        <option value="todos">Todos os meses</option>
-        {mesesDisponiveis.map((mes) => {
-          const [year, month] = mes.split("-");
-          const label = new Date(Number(year), Number(month) - 1).toLocaleDateString("pt-BR", {
-            month: "long",
-            year: "numeric",
-          });
-          return (
-            <option key={mes} value={mes}>
-              {label}
-            </option>
-          );
-        })}
-      </select>
-
-      {centros.length > 0 && (
+      <div className="flex gap-2 flex-wrap sm:contents">
         <select
-          value={centroFiltro}
-          onChange={(e) => onCentroChange(e.target.value)}
-          className="h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+          value={mesFiltro}
+          onChange={(e) => onMesChange(e.target.value)}
+          className="flex-1 sm:flex-none h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
         >
-          <option value="todos">Todos os centros</option>
-          {centros.map((centro) => (
-            <option key={centro.id} value={centro.nome}>
-              {centro.icone} {centro.nome}
-            </option>
-          ))}
+          <option value="todos">Todos os meses</option>
+          {mesesDisponiveis.map((mes) => {
+            const [year, month] = mes.split("-");
+            const label = new Date(Number(year), Number(month) - 1).toLocaleDateString("pt-BR", {
+              month: "long",
+              year: "numeric",
+            });
+            return (
+              <option key={mes} value={mes}>
+                {label}
+              </option>
+            );
+          })}
         </select>
-      )}
 
-      {algumFiltroAtivo && (
-        <button
-          type="button"
-          onClick={onClear}
-          className="h-8 px-3 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors cursor-pointer"
-        >
-          Limpar
-        </button>
-      )}
+        {centros.length > 0 && (
+          <select
+            value={centroFiltro}
+            onChange={(e) => onCentroChange(e.target.value)}
+            className="flex-1 sm:flex-none h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+          >
+            <option value="todos">Todos os centros</option>
+            {centros.map((centro) => (
+              <option key={centro.id} value={centro.nome}>
+                {centro.icone} {centro.nome}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {algumFiltroAtivo && (
+          <button
+            type="button"
+            onClick={onClear}
+            className="h-8 px-3 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors cursor-pointer shrink-0"
+          >
+            Limpar
+          </button>
+        )}
+      </div>
     </div>
   );
 };

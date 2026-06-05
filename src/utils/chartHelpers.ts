@@ -9,10 +9,10 @@ export type ChartEntry = {
 export function buildChartData(transactions: ITransaction[]): ChartEntry[] {
   const months: Record<string, ChartEntry> = {};
 
-  for (let i = 3; i >= 0; i--) {
+  for (let i = -1; i <= 1; i++) {
     const date = new Date();
     date.setDate(1);
-    date.setMonth(date.getMonth() - i);
+    date.setMonth(date.getMonth() + i);
 
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
     const label = date.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" });

@@ -40,8 +40,8 @@ export function Navbar({ activePage, onNavigate }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
-        <nav className="flex items-center gap-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-6">
+        <nav className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-1 min-w-0">
           {navItems.map((item) => (
             <NavButton
               key={item.pageId}
@@ -54,7 +54,7 @@ export function Navbar({ activePage, onNavigate }: NavbarProps) {
           ))}
         </nav>
 
-        <span className="text-xs text-[var(--text-muted)] font-mono hidden md:block">
+        <span className="text-xs text-[var(--text-muted)] font-mono hidden md:block shrink-0">
           {today}
         </span>
       </div>
