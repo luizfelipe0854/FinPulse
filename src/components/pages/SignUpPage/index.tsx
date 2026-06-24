@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const SignUpPage = () => {
   const navigate = useNavigate();
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
+    <div className="w-full h-screen overflow-hidden flex flex-col items-center justify-center">
       <img
         src={FinPulseLogo}
         alt="FinPulse Logo"
