@@ -1,13 +1,10 @@
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { app } from "./config";
+import { auth } from "./config";
 import { createUserCollection } from "./firestore";
-
-const auth = getAuth(app);
 
 export const createUser = async (
   email: string,
