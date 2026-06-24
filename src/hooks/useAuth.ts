@@ -10,6 +10,7 @@ type AuthContextType = {
   user: AppUser | null;
   loading: boolean;
   logout: () => Promise<void>;
+  refreshUser: () => void;
 };
 
 export const AuthContext = createContext({} as AuthContextType);

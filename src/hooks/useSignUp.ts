@@ -3,9 +3,14 @@ import { createUser } from "@/services/firebase/auth";
 import { toastMessage } from "@/utils/toastMessage";
 import { firebaseErrors } from "@/constants/firebaseErrors";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./useAuth";
 
 export const useSignUp = () => {
   const [isLoadingSignUp, setIsLoadingSignUp] = useState(false);
+  const navigate = useNavigate();
+  const { refreshUser } = useAuth();
+
   async function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -30,10 +35,9 @@ export const useSignUp = () => {
     try {
       setIsLoadingSignUp(true);
       await createUser(data.email, data.password, data.displayName);
+      refreshUser();
       toastMessage("Usuário criado com sucesso!", "success");
-      data.displayName = "";
-      data.email = "";
-      data.password = "";
+      navigate("/dashboard");
     } catch (error) {
       if (error instanceof FirebaseError) {
         toastMessage(firebaseErrors[error.code] ?? error.message, "error");

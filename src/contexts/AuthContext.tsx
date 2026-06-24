@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   onAuthStateChanged,
-  getAuth,
   signOut,
   type User as FirebaseUser,
 } from "firebase/auth";
-import { app } from "@/services/firebase/config";
+import { auth } from "@/services/firebase/config";
 import { AuthContext, type AppUser } from "@/hooks/useAuth";
-
-const auth = getAuth(app);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(null);
@@ -37,8 +34,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => signOut(auth);
 
+  const refreshUser = () => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser({
+        id: currentUser.uid,
+        name: currentUser.displayName,
+        email: currentUser.email,
+      });
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
