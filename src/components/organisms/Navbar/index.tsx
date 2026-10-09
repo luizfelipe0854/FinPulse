@@ -53,7 +53,7 @@ export function Navbar({ activePage, onNavigate, variant, onNewTransaction }: Na
   return (
     <nav
       aria-label="Principal"
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl border-t border-line pb-[env(safe-area-inset-bottom)]"
+      className="md:hidden fixed bottom-0 inset-x-0 z-[55] bg-surface border-t border-line pb-[env(safe-area-inset-bottom)] [transform:translateZ(0)]"
     >
       <div className="flex items-center h-16 px-2">
         {renderTab(primeiro)}
