@@ -4,34 +4,27 @@ import AlienShip from "@/assets/AlienShip.svg";
 
 type EmptyStateProps = {
   text: string;
-  redirectText?: string;
-  redirectButtonText?: string;
+  description?: string;
+  actionLabel?: string;
+  onAction?: () => void;
 };
 
-export const EmptyState = ({
-  text,
-  redirectText,
-  redirectButtonText,
-}: EmptyStateProps) => {
+export const EmptyState = ({ text, description, actionLabel, onAction }: EmptyStateProps) => {
   return (
-    <section className="flex flex-col items-center justify-center h-full gap-2">
-      <img src={AlienShip} alt="Alien Ship" className="w-20 h-20 mb-2" />
-      <Text as="h2" variant="title" size="lg">
+    <section className="flex flex-col items-center justify-center text-center gap-2 py-12 px-6">
+      <div className="size-20 rounded-full bg-surface-2 flex items-center justify-center mb-2">
+        <img src={AlienShip} alt="" className="size-12 opacity-80" />
+      </div>
+      <Text as="h2" variant="title" size="md">
         {text}
       </Text>
-      {redirectText && redirectButtonText && (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <Text as="p" variant="body" size="sm">
-            {redirectText}
-          </Text>
-          <Button
-            label={redirectButtonText}
-            onClick={() => {
-              alert("ta funcionando");
-            }}
-            variant="primary"
-          />
-        </div>
+      {description && (
+        <Text as="p" variant="muted" size="sm" className="max-w-xs">
+          {description}
+        </Text>
+      )}
+      {actionLabel && onAction && (
+        <Button label={actionLabel} size="sm" onClick={onAction} className="mt-3" />
       )}
     </section>
   );

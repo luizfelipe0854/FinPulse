@@ -1,63 +1,80 @@
-import { LayoutDashboard, PlusCircle, Target, Sparkles } from "lucide-react";
+import { House, ReceiptText, PieChart, Sparkles, Plus } from "lucide-react";
+import clsx from "clsx";
 import { NavButton } from "@/components/molecules/NavButton";
 import type { PageId } from "@/types";
 
 interface NavbarProps {
   activePage: PageId;
   onNavigate: (page: PageId) => void;
+  variant: "top" | "bottom";
+  onNewTransaction?: () => void;
 }
 
-const navItems: { pageId: PageId; label: string; icon: React.ReactNode }[] = [
-  {
-    pageId: "dashboard",
-    label: "Dashboard",
-    icon: <LayoutDashboard size={15} />,
-  },
-  {
-    pageId: "lancamentos",
-    label: "Lançamentos",
-    icon: <PlusCircle size={15} />,
-  },
-  { 
-    pageId: "centros", 
-    label: "Centro de Custos", 
-    icon: <Target size={15} /> 
-  },
-  { 
-    pageId: "ia", 
-    label: "Análise IA", 
-    icon: <Sparkles size={15} /> 
-  },
+const navItems: { pageId: PageId; label: string; shortLabel: string; Icon: typeof House }[] = [
+  { pageId: "dashboard", label: "Início", shortLabel: "Início", Icon: House },
+  { pageId: "lancamentos", label: "Lançamentos", shortLabel: "Extrato", Icon: ReceiptText },
+  { pageId: "centros", label: "Centros de custo", shortLabel: "Centros", Icon: PieChart },
+  { pageId: "ia", label: "Análise IA", shortLabel: "IA", Icon: Sparkles },
 ];
 
-export function Navbar({ activePage, onNavigate }: NavbarProps) {
-  const today = new Date().toLocaleDateString("pt-BR", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+export function Navbar({ activePage, onNavigate, variant, onNewTransaction }: NavbarProps) {
+  if (variant === "top") {
+    return (
+      <nav aria-label="Principal" className="flex items-center gap-1 p-1 rounded-full bg-surface-2">
+        {navItems.map(({ pageId, label, Icon }) => (
+          <NavButton
+            key={pageId}
+            pageId={pageId}
+            label={label}
+            icon={<Icon size={16} />}
+            active={activePage === pageId}
+            onClick={onNavigate}
+          />
+        ))}
+      </nav>
+    );
+  }
+
+  const [primeiro, segundo, ...resto] = navItems;
+
+  const renderTab = ({ pageId, label, shortLabel, Icon }: (typeof navItems)[number]) => (
+    <NavButton
+      key={pageId}
+      variant="tab"
+      pageId={pageId}
+      label={label}
+      shortLabel={shortLabel}
+      icon={<Icon size={22} strokeWidth={activePage === pageId ? 2.4 : 1.9} />}
+      active={activePage === pageId}
+      onClick={onNavigate}
+    />
+  );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-6">
-        <nav className="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-1 min-w-0">
-          {navItems.map((item) => (
-            <NavButton
-              key={item.pageId}
-              pageId={item.pageId}
-              label={item.label}
-              icon={item.icon}
-              active={activePage === item.pageId}
-              onClick={onNavigate}
-            />
-          ))}
-        </nav>
+    <nav
+      aria-label="Principal"
+      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-surface/85 backdrop-blur-xl border-t border-line pb-[env(safe-area-inset-bottom)]"
+    >
+      <div className="flex items-center h-16 px-2">
+        {renderTab(primeiro)}
+        {renderTab(segundo)}
 
-        <span className="text-xs text-[var(--text-muted)] font-mono hidden md:block shrink-0">
-          {today}
-        </span>
+        <div className="flex-1 flex justify-center">
+          <button
+            type="button"
+            onClick={onNewTransaction}
+            aria-label="Novo lançamento"
+            className={clsx(
+              "size-14 -mt-7 rounded-full bg-primary text-primary-ink flex items-center justify-center cursor-pointer",
+              "shadow-[0_8px_20px_-4px_var(--primary)] ring-4 ring-bg active:scale-95 transition-transform",
+            )}
+          >
+            <Plus size={26} strokeWidth={2.5} />
+          </button>
+        </div>
+
+        {resto.map(renderTab)}
       </div>
-    </header>
+    </nav>
   );
 }

@@ -1,3 +1,6 @@
+import { X } from "lucide-react";
+import { Select } from "@/components/atoms";
+import { SegmentedControl } from "@/components/molecules/SegmentedControl";
 import type { ICentro } from "@/services/firebase/firestore";
 
 export type TipoFiltro = "todos" | "entrada" | "saida";
@@ -15,6 +18,12 @@ type FilterBarProps = {
   onClear: () => void;
 };
 
+const tipoOptions: { value: TipoFiltro; label: string }[] = [
+  { value: "todos", label: "Tudo" },
+  { value: "entrada", label: "Entradas" },
+  { value: "saida", label: "Saídas" },
+];
+
 export const FilterBar = ({
   tipoFiltro,
   onTipoChange,
@@ -27,35 +36,23 @@ export const FilterBar = ({
   algumFiltroAtivo,
   onClear,
 }: FilterBarProps) => {
-  const tipoLabels = { todos: "Todos", entrada: "Entradas", saida: "Saídas" };
-
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-      <div className="flex gap-1">
-        {(["todos", "entrada", "saida"] as TipoFiltro[]).map((tipo) => {
-          const ativo = tipoFiltro === tipo;
-          return (
-            <button
-              key={tipo}
-              type="button"
-              onClick={() => onTipoChange(tipo)}
-              className={`px-3 h-8 rounded-lg text-xs font-mono border transition-colors cursor-pointer ${
-                ativo
-                  ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                  : "bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text-body)]"
-              }`}
-            >
-              {tipoLabels[tipo]}
-            </button>
-          );
-        })}
-      </div>
+    <div className="flex flex-col gap-3">
+      <SegmentedControl
+        ariaLabel="Tipo de lançamento"
+        options={tipoOptions}
+        value={tipoFiltro}
+        onChange={onTipoChange}
+        className="sm:max-w-sm"
+      />
 
-      <div className="flex gap-2 flex-wrap sm:contents">
-        <select
+      <div className="flex gap-2 overflow-x-auto -mx-4 px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <Select
+          look="chip"
           value={mesFiltro}
           onChange={(e) => onMesChange(e.target.value)}
-          className="flex-1 sm:flex-none h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+          aria-label="Filtrar por mês"
+          className="shrink-0"
         >
           <option value="todos">Todos os meses</option>
           {mesesDisponiveis.map((mes) => {
@@ -66,17 +63,19 @@ export const FilterBar = ({
             });
             return (
               <option key={mes} value={mes}>
-                {label}
+                {label.charAt(0).toUpperCase() + label.slice(1)}
               </option>
             );
           })}
-        </select>
+        </Select>
 
         {centros.length > 0 && (
-          <select
+          <Select
+            look="chip"
             value={centroFiltro}
             onChange={(e) => onCentroChange(e.target.value)}
-            className="flex-1 sm:flex-none h-8 px-3 text-xs font-mono border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+            aria-label="Filtrar por centro de custo"
+            className="shrink-0"
           >
             <option value="todos">Todos os centros</option>
             {centros.map((centro) => (
@@ -84,15 +83,16 @@ export const FilterBar = ({
                 {centro.icone} {centro.nome}
               </option>
             ))}
-          </select>
+          </Select>
         )}
 
         {algumFiltroAtivo && (
           <button
             type="button"
             onClick={onClear}
-            className="h-8 px-3 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors cursor-pointer shrink-0"
+            className="shrink-0 h-9 pl-3 pr-3.5 rounded-full text-sm font-medium text-danger bg-danger/10 hover:bg-danger/15 flex items-center gap-1 cursor-pointer transition-colors"
           >
+            <X size={14} />
             Limpar
           </button>
         )}

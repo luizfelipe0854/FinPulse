@@ -1,8 +1,8 @@
-import { Plus } from "lucide-react";
-import { Button, Text } from "@/components/atoms";
+import { Card } from "@/components/atoms";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { CentroCard } from "@/components/molecules/CentroCard";
 import type { ICentro, ITransaction } from "@/services/firebase/firestore";
+import { PageTitle } from "./PageTitle";
 
 type CentroStats = {
   entrada: number;
@@ -39,56 +39,47 @@ export const CentrosView = ({
     statsPorCentro[t.category].count++;
   });
 
+  const totalSaidas = Object.values(statsPorCentro).reduce((acc, s) => acc + s.saida, 0);
+
+  const vazio = { entrada: 0, saida: 0, count: 0 };
+  const centrosOrdenados = [...centros].sort(
+    (a, b) => (statsPorCentro[b.nome]?.saida ?? 0) - (statsPorCentro[a.nome]?.saida ?? 0),
+  );
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Text as="h2" variant="title" size="lg">
-          Centros de custo
-        </Text>
-        {/* Mobile: apenas ícone */}
-        <button
-          type="button"
-          onClick={onNew}
-          className="sm:hidden h-9 w-9 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--surface)] cursor-pointer hover:bg-[var(--primary)]/90 transition-colors"
-          aria-label="Novo centro"
-        >
-          <Plus size={18} />
-        </button>
-        {/* Desktop: botão completo */}
-        <Button
-          label="Novo centro"
-          icon={<Plus size={16} />}
-          variant="primary"
-          className="hidden sm:flex h-9 text-sm"
-          onClick={onNew}
-        />
-      </div>
+    <div className="flex flex-col gap-5">
+      <PageTitle
+        title="Centros de custo"
+        subtitle="Para onde vai o seu dinheiro"
+        action={{ label: "Novo centro", onClick: onNew, alwaysVisible: true }}
+      />
 
       {isLoading ? (
-        <Text variant="muted" size="sm" className="py-8 text-center">
-          Carregando...
-        </Text>
+        <Card className="h-48 animate-pulse" />
       ) : centros.length === 0 ? (
-        <EmptyState text="Nenhum centro de custo ainda" />
+        <Card>
+          <EmptyState
+            text="Nenhum centro de custo ainda"
+            description="Crie centros como Mercado, Casa ou Transporte para organizar seus lançamentos."
+            actionLabel="Criar primeiro centro"
+            onAction={onNew}
+          />
+        </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {centros.map((centro) => {
-            const stats = statsPorCentro[centro.nome] ?? {
-              entrada: 0,
-              saida: 0,
-              count: 0,
-            };
-
+        <Card className="divide-y divide-line overflow-hidden">
+          {centrosOrdenados.map((centro) => {
+            const stats = statsPorCentro[centro.nome] ?? vazio;
             return (
               <CentroCard
                 key={centro.id}
                 centro={centro}
                 stats={stats}
+                share={totalSaidas > 0 ? stats.saida / totalSaidas : 0}
                 onRemove={onRemove}
               />
             );
           })}
-        </div>
+        </Card>
       )}
     </div>
   );

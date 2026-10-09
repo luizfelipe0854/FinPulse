@@ -1,24 +1,16 @@
-import { Text } from "@/components/atoms";
+import clsx from "clsx";
+import type { ReactNode } from "react";
 
 type CardProps = {
-  icon?: React.ReactNode;
-  title: string;
-  content: string;
+  children?: ReactNode;
+  className?: string;
+  as?: "div" | "section" | "article";
 };
 
-export const Card = ({ icon, title, content }: CardProps) => {
+export const Card = ({ children, className, as: Tag = "div" }: CardProps) => {
   return (
-    <div className="max-w-[300px] min-w-[200px] border border-[var(--border)] p-2 rounded-lg bg-[var(--surface)] ">
-      <div className="flex flex-row items-center justify-center gap-2">
-        {icon}
-        <Text variant="title" size="lg" as="h2">
-          {title}
-        </Text>
-      </div>
-      <hr />
-      <Text variant="body" as="p" size="xl" className="text-center">
-        {content}
-      </Text>
-    </div>
+    <Tag className={clsx("bg-surface rounded-3xl shadow-card", className)}>
+      {children}
+    </Tag>
   );
 };

@@ -3,12 +3,13 @@ type CheckboxProps = {
   onChange?: (checked: boolean) => void;
   checked?: boolean;
 };
+
 export const Checkbox = ({ label, onChange, checked }: CheckboxProps) => {
   return (
-    <label className="flex items-center gap-2 text-[var(--text-body)] cursor-pointer">
+    <label className="flex items-center gap-2.5 text-sm text-body cursor-pointer select-none">
       <input
         type="checkbox"
-        className="form-checkbox"
+        className="size-5 rounded-md accent-[var(--primary)] cursor-pointer"
         checked={checked}
         onChange={(e) => onChange?.(e.target.checked)}
       />

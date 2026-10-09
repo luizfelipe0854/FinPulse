@@ -45,22 +45,34 @@ export const DashboardPage = () => {
     await addCentro(data);
   }
 
+  function navigate(page: PageId) {
+    setActivePage(page);
+    window.scrollTo({ top: 0 });
+  }
+
+  const openTransactionModal = () => setShowTransactionModal(true);
+
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <AppHeader />
+    <div className="min-h-dvh bg-bg">
+      <AppHeader
+        activePage={activePage}
+        onNavigate={navigate}
+        onNewTransaction={openTransactionModal}
+      />
 
-      <Navbar activePage={activePage} onNavigate={setActivePage} />
-
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 pt-2 pb-32 md:pt-6 md:pb-16">
         {activePage === "dashboard" && (
           <DashboardView
             transactions={transactions}
+            centros={centros}
             income={income}
             expenses={expenses}
             balance={balance}
             isLoading={loadingTransactions}
             onDelete={removeTransaction}
-            onNavigateToLancamentos={() => setActivePage("lancamentos")}
+            onNavigateToLancamentos={() => navigate("lancamentos")}
+            onNavigateToCentros={() => navigate("centros")}
+            onNewTransaction={openTransactionModal}
           />
         )}
 
@@ -70,7 +82,7 @@ export const DashboardPage = () => {
             centros={centros}
             isLoading={loadingTransactions}
             onDelete={removeTransaction}
-            onNewTransaction={() => setShowTransactionModal(true)}
+            onNewTransaction={openTransactionModal}
           />
         )}
 
@@ -87,6 +99,13 @@ export const DashboardPage = () => {
         )}
       </main>
 
+      <Navbar
+        variant="bottom"
+        activePage={activePage}
+        onNavigate={navigate}
+        onNewTransaction={openTransactionModal}
+      />
+
       {showTransactionModal && (
         <TransactionModal
           centros={centros}
@@ -96,10 +115,7 @@ export const DashboardPage = () => {
       )}
 
       {showCentroModal && (
-        <CentroModal
-          onSubmit={handleAddCentro}
-          onClose={() => setShowCentroModal(false)}
-        />
+        <CentroModal onSubmit={handleAddCentro} onClose={() => setShowCentroModal(false)} />
       )}
     </div>
   );

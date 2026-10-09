@@ -1,25 +1,32 @@
 import { useState } from "react";
-import { Button, Input, Text } from "@/components/atoms";
+import clsx from "clsx";
+import { Button, Input, IconTile } from "@/components/atoms";
+import { Sheet } from "@/components/organisms/Sheet";
 import type { NovoCentro } from "@/types";
 
 const PRESET_COLORS = [
-  "#4f46e5",
-  "#22c55e",
-  "#ef4444",
-  "#f59e0b",
+  "#2f6bff",
+  "#12a150",
+  "#ef4452",
+  "#f2a516",
   "#0ea5e9",
   "#8b5cf6",
-  "#06b6d4",
+  "#ec4899",
   "#64748b",
 ];
+
+const SUGESTOES = ["🛒", "🍽️", "🏠", "🚗", "💡", "🎬", "💊", "📚", "✈️", "💼"];
 
 type CentroModalProps = {
   onSubmit: (data: NovoCentro) => Promise<void>;
   onClose: () => void;
 };
 
+const labelClass = "text-[13px] font-medium text-muted px-1";
+
 export const CentroModal = ({ onSubmit, onClose }: CentroModalProps) => {
   const [cor, setCor] = useState(PRESET_COLORS[0]);
+  const [icone, setIcone] = useState(SUGESTOES[0]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,13 +35,13 @@ export const CentroModal = ({ onSubmit, onClose }: CentroModalProps) => {
 
     const fd = new FormData(e.currentTarget);
     const nome = String(fd.get("nome") ?? "").trim();
-    const icone = String(fd.get("icone") ?? "").trim();
+    const iconeLimpo = icone.trim();
 
-    if (!nome || !icone) return;
+    if (!nome || !iconeLimpo) return;
 
     try {
       setIsLoading(true);
-      await onSubmit({ nome, icone, cor });
+      await onSubmit({ nome, icone: iconeLimpo, cor });
       onClose();
     } finally {
       setIsLoading(false);
@@ -42,81 +49,86 @@ export const CentroModal = ({ onSubmit, onClose }: CentroModalProps) => {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-[var(--surface)] rounded-xl w-full max-w-sm p-6 shadow-xl">
-        <div className="flex items-center justify-between mb-4">
-          <Text as="h3" variant="title" size="lg">
-            Novo centro de custo
-          </Text>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-[var(--text-muted)] hover:text-[var(--text-title)] transition-colors cursor-pointer text-xl leading-none"
-            aria-label="Fechar"
-          >
-            ✕
-          </button>
+    <Sheet title="Novo centro de custo" onClose={onClose}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="flex items-center gap-3">
+          <IconTile color={cor} size="lg">
+            {icone || "?"}
+          </IconTile>
+          <label className="flex-1 flex flex-col gap-1.5">
+            <span className={labelClass}>Nome</span>
+            <Input name="nome" type="text" placeholder="Ex: Alimentação" required autoFocus />
+          </label>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <Text as="span" variant="body" size="sm">
-              Nome:
-            </Text>
-            <Input name="nome" type="text" placeholder="Ex: Alimentação" required />
-          </label>
-
-          <label className="flex flex-col gap-1">
-            <Text as="span" variant="body" size="sm">
-              Ícone (emoji):
-            </Text>
-            <Input name="icone" type="text" placeholder="Ex: 🍽️" maxLength={4} required />
-          </label>
-
-          <div className="flex flex-col gap-2">
-            <Text as="span" variant="body" size="sm">
-              Cor:
-            </Text>
-            <div className="flex gap-2 flex-wrap">
-              {PRESET_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCor(c)}
-                  style={{ backgroundColor: c }}
-                  aria-label={`Selecionar cor ${c}`}
-                  className={`w-8 h-8 rounded-full cursor-pointer transition-transform ${
-                    cor === c ? "scale-125 ring-2 ring-offset-2 ring-[var(--primary)]" : ""
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <Button
-              label="Cancelar"
-              variant="secondary"
-              type="button"
-              onClick={onClose}
-              className="flex-1 h-10"
-              disabled={isLoading}
-            />
-            <Button
-              label={isLoading ? "Salvando..." : "Salvar"}
-              variant="primary"
-              type="submit"
-              className="flex-1 h-10"
-              disabled={isLoading}
+        <div className="flex flex-col gap-2">
+          <span className={labelClass}>Ícone</span>
+          <div className="flex flex-wrap gap-2">
+            {SUGESTOES.map((emoji) => (
+              <button
+                key={emoji}
+                type="button"
+                onClick={() => setIcone(emoji)}
+                aria-label={`Usar ${emoji}`}
+                aria-pressed={icone === emoji}
+                className={clsx(
+                  "size-10 rounded-xl text-xl flex items-center justify-center cursor-pointer transition-all",
+                  icone === emoji ? "bg-primary/10 ring-2 ring-primary" : "bg-surface-2 hover:bg-line",
+                )}
+              >
+                {emoji}
+              </button>
+            ))}
+            <input
+              type="text"
+              value={SUGESTOES.includes(icone) ? "" : icone}
+              onChange={(e) => setIcone(e.target.value)}
+              maxLength={4}
+              placeholder="Outro"
+              aria-label="Outro emoji"
+              className="h-10 w-20 rounded-xl bg-surface-2 text-center text-sm text-ink placeholder:text-muted outline-none border border-transparent focus:border-primary"
             />
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className={labelClass}>Cor</span>
+          <div className="flex gap-2.5 flex-wrap">
+            {PRESET_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCor(c)}
+                style={{ backgroundColor: c }}
+                aria-label={`Selecionar cor ${c}`}
+                aria-pressed={cor === c}
+                className={clsx(
+                  "size-8 rounded-full cursor-pointer transition-transform ring-offset-2 ring-offset-surface",
+                  cor === c ? "ring-2 ring-ink scale-110" : "hover:scale-105",
+                )}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-3 pt-1">
+          <Button
+            label="Cancelar"
+            variant="secondary"
+            size="lg"
+            onClick={onClose}
+            className="flex-1"
+            disabled={isLoading}
+          />
+          <Button
+            label={isLoading ? "Salvando..." : "Criar centro"}
+            type="submit"
+            size="lg"
+            className="flex-[2]"
+            disabled={isLoading}
+          />
+        </div>
+      </form>
+    </Sheet>
   );
 };

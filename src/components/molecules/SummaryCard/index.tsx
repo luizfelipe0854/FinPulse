@@ -1,35 +1,27 @@
-import { Text } from "@/components/atoms";
+import clsx from "clsx";
 
 type SummaryCardProps = {
   icon: React.ReactNode;
-  iconBgColor: string;
   label: string;
   value: string;
-  valueColor?: string;
+  tone: "success" | "danger";
 };
 
-export const SummaryCard = ({
-  icon,
-  iconBgColor,
-  label,
-  value,
-  valueColor = "text-[var(--text-title)]",
-}: SummaryCardProps) => {
+export const SummaryCard = ({ icon, label, value, tone }: SummaryCardProps) => {
   return (
-    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 flex items-center gap-3">
-      <div
-        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${iconBgColor}`}
-      >
-        {icon}
+    <div className="flex-1 min-w-0 rounded-2xl bg-surface-2 p-3.5 flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <span
+          className={clsx(
+            "size-6 rounded-full flex items-center justify-center",
+            tone === "success" ? "bg-success/15 text-success" : "bg-danger/15 text-danger",
+          )}
+        >
+          {icon}
+        </span>
+        <span className="text-[13px] font-medium text-muted">{label}</span>
       </div>
-      <div>
-        <Text as="p" variant="muted" size="xs">
-          {label}
-        </Text>
-        <Text as="p" variant="title" size="lg" className={`${valueColor} truncate`}>
-          {value}
-        </Text>
-      </div>
+      <span className="money text-lg font-semibold text-ink truncate">{value}</span>
     </div>
   );
 };

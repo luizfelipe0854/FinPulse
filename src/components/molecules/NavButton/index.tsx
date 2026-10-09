@@ -4,40 +4,51 @@ import type { PageId } from "@/types";
 interface NavButtonProps {
   pageId: PageId;
   label: string;
+  shortLabel?: string;
   icon: React.ReactNode;
   active: boolean;
+  variant?: "top" | "tab";
   onClick: (page: PageId) => void;
 }
 
 export function NavButton({
   pageId,
   label,
+  shortLabel,
   icon,
   active,
+  variant = "top",
   onClick,
 }: NavButtonProps) {
-  return (
-    <button
-      onClick={() => onClick(pageId)}
-      className={clsx(
-        "relative flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-sm font-mono transition-all duration-200 cursor-pointer shrink-0 whitespace-nowrap",
-        active
-          ? "text-[var(--primary)] bg-[var(--primary)]/10 border border-[var(--primary)]/20"
-          : "text-[var(--text-muted)] hover:text-[var(--text-body)] hover:bg-[var(--surface)] border border-transparent",
-      )}
-    >
-      <span
+  if (variant === "tab") {
+    return (
+      <button
+        type="button"
+        onClick={() => onClick(pageId)}
+        aria-current={active ? "page" : undefined}
         className={clsx(
-          "transition-colors",
-          active ? "text-[var(--primary)]" : "text-[var(--text-muted)]",
+          "flex-1 flex flex-col items-center justify-center gap-1 h-full cursor-pointer transition-colors",
+          active ? "text-primary" : "text-muted",
         )}
       >
         {icon}
-      </span>
-      {label}
-      {active && (
-        <span className="absolute -bottom-px left-1/2 -translate-x-1/2 w-8 h-px bg-[var(--primary)] rounded-full" />
+        <span className="text-[11px] font-medium leading-none">{shortLabel ?? label}</span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onClick(pageId)}
+      aria-current={active ? "page" : undefined}
+      className={clsx(
+        "flex items-center gap-2 h-9 px-4 rounded-full text-sm font-medium cursor-pointer whitespace-nowrap transition-all duration-200",
+        active ? "bg-surface text-ink shadow-card" : "text-muted hover:text-ink",
       )}
+    >
+      <span className={clsx(active ? "text-primary" : "text-muted")}>{icon}</span>
+      {label}
     </button>
   );
 }

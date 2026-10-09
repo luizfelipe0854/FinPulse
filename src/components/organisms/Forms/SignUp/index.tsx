@@ -1,66 +1,52 @@
-import { Button, Input, Text } from "@/components/atoms";
+import { Link } from "react-router-dom";
+import { Button, Input } from "@/components/atoms";
 import { useSignUp } from "@/hooks/useSignUp";
-import { useNavigate } from "react-router-dom";
+
+const labelClass = "text-[13px] font-medium text-muted px-1";
 
 export const SignUp = () => {
-  const navigate = useNavigate();
   const { handleSignUp, isLoadingSignUp } = useSignUp();
+
   return (
-    <form
-      className="flex flex-col gap-4 w-full max-w-sm mx-auto"
-      onSubmit={handleSignUp}
-      aria-busy={isLoadingSignUp}
-    >
-      <div className="flex flex-col gap-1 text-center">
-        <Text as="h1" variant="title" size="lg">
-          Criar Conta
-        </Text>
-        <Text as="p" variant="body" size="sm">
-          Preencha os campos para criar sua conta.
-        </Text>
-      </div>
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Nome:
-        </Text>
-        <Input name="displayName" placeholder="Digite seu nome" type="text" />
+    <form className="flex flex-col gap-5" onSubmit={handleSignUp} aria-busy={isLoadingSignUp}>
+      <h2 className="text-xl font-semibold tracking-tight text-ink">Criar conta</h2>
+
+      <label className="flex flex-col gap-1.5">
+        <span className={labelClass}>Nome</span>
+        <Input name="displayName" placeholder="Como quer ser chamado" type="text" autoComplete="name" />
       </label>
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          E-mail:
-        </Text>
-        <Input
-          name="email"
-          placeholder="Digite seu e-mail"
-          type="email"
-          autoComplete="email"
-        />
+
+      <label className="flex flex-col gap-1.5">
+        <span className={labelClass}>E-mail</span>
+        <Input name="email" placeholder="voce@email.com" type="email" autoComplete="email" />
       </label>
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Senha:
-        </Text>
+
+      <label className="flex flex-col gap-1.5">
+        <span className={labelClass}>Senha</span>
         <Input
           name="password"
-          placeholder="Digite sua senha"
+          placeholder="Mínimo de 8 caracteres"
           type="password"
           autoComplete="new-password"
           minLength={8}
         />
       </label>
-      <div className="flex flex-col justify-center items-center w-full">
-        <Button
-          label={isLoadingSignUp ? "Criando..." : "Registrar"}
-          variant="primary"
-          aria-busy={isLoadingSignUp}
-          type="submit"
-          disabled={isLoadingSignUp}
-          className="w-full h-10"
-        />
-        <Text as="span" variant="body" size="sm" className="mt-2 cursor-pointer">
-          <a onClick={() => navigate("/login")}>Já possui conta? Faça login</a>
-        </Text>
-      </div>
+
+      <Button
+        label={isLoadingSignUp ? "Criando..." : "Criar conta"}
+        type="submit"
+        size="lg"
+        disabled={isLoadingSignUp}
+        aria-busy={isLoadingSignUp}
+        className="w-full mt-1"
+      />
+
+      <p className="text-sm text-muted text-center">
+        Já tem conta?{" "}
+        <Link to="/login" className="font-semibold text-primary hover:opacity-80">
+          Entrar
+        </Link>
+      </p>
     </form>
   );
 };

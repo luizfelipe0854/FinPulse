@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Button, Input, Text } from "@/components/atoms";
+import clsx from "clsx";
+import { Button, Input, Select } from "@/components/atoms";
+import { SegmentedControl } from "@/components/molecules/SegmentedControl";
 import type { ICentro } from "@/services/firebase/firestore";
 import type { NovaTransacao } from "@/types";
 
@@ -9,15 +11,18 @@ type TransactionFormProps = {
   onCancel: () => void;
 };
 
-const selectClass =
-  "w-full h-10 sm:h-11 px-4 border border-[var(--border)] rounded-lg bg-[var(--surface)] text-[var(--text-body)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]";
+type Tipo = NovaTransacao["type"];
 
-export const TransactionForm = ({
-  centros,
-  onSubmit,
-  onCancel,
-}: TransactionFormProps) => {
+const tipoOptions: { value: Tipo; label: string }[] = [
+  { value: "saida", label: "Saída" },
+  { value: "entrada", label: "Entrada" },
+];
+
+const labelClass = "text-[13px] font-medium text-muted px-1";
+
+export const TransactionForm = ({ centros, onSubmit, onCancel }: TransactionFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [tipo, setTipo] = useState<Tipo>("saida");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +30,7 @@ export const TransactionForm = ({
     const data = new FormData(form);
 
     const payload: NovaTransacao = {
-      type: data.get("type") as "entrada" | "saida",
+      type: data.get("type") as Tipo,
       amount: Number(data.get("amount")),
       category: data.get("category") as string,
       description: data.get("description") as string,
@@ -42,88 +47,78 @@ export const TransactionForm = ({
   };
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Tipo:
-        </Text>
-        <select name="type" required className={selectClass} defaultValue="">
-          <option value="" disabled>
-            Selecione o tipo
-          </option>
-          <option value="entrada">Entrada</option>
-          <option value="saida">Saída</option>
-        </select>
-      </label>
+    <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+      <input type="hidden" name="type" value={tipo} />
+      <SegmentedControl
+        ariaLabel="Tipo do lançamento"
+        options={tipoOptions}
+        value={tipo}
+        onChange={setTipo}
+        tone={tipo === "saida" ? "danger" : "success"}
+      />
 
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Valor:
-        </Text>
-        <Input
-          name="amount"
-          type="number"
-          placeholder="0,00"
-          min="0.01"
-          step="0.01"
-          required
-        />
-      </label>
-
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Centro de custo:
-        </Text>
-        <select
-          name="category"
-          required
-          className={selectClass}
-          defaultValue=""
+      <label className="flex flex-col items-center gap-1 py-2">
+        <span className="text-[13px] font-medium text-muted">Valor</span>
+        <span
+          className={clsx(
+            "flex items-baseline justify-center gap-1.5 transition-colors",
+            tipo === "saida" ? "text-danger" : "text-success",
+          )}
         >
-          <option value="" disabled>
-            Selecione um centro
-          </option>
-          {centros.map((c) => (
-            <option key={c.id} value={c.nome}>
-              {c.icone} {c.nome}
+          <span className="text-2xl font-semibold">R$</span>
+          <input
+            name="amount"
+            type="number"
+            inputMode="decimal"
+            placeholder="0,00"
+            min="0.01"
+            step="0.01"
+            required
+            autoFocus
+            className="money [field-sizing:content] min-w-[4ch] max-w-[9ch] bg-transparent text-5xl font-bold tracking-tight outline-none placeholder:text-line"
+          />
+        </span>
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className={labelClass}>Descrição</span>
+        <Input name="description" type="text" placeholder="Ex: Mercado do mês" required />
+      </label>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label className="flex flex-col gap-1.5">
+          <span className={labelClass}>Centro de custo</span>
+          <Select name="category" required defaultValue="">
+            <option value="" disabled>
+              {centros.length ? "Escolha um centro" : "Crie um centro antes"}
             </option>
-          ))}
-        </select>
-      </label>
+            {centros.map((c) => (
+              <option key={c.id} value={c.nome}>
+                {c.icone} {c.nome}
+              </option>
+            ))}
+          </Select>
+        </label>
 
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Descrição:
-        </Text>
-        <Input name="description" type="text" placeholder="Descrição" required />
-      </label>
+        <label className="flex flex-col gap-1.5">
+          <span className={labelClass}>Data</span>
+          <Input
+            name="date"
+            type="date"
+            required
+            defaultValue={new Date().toISOString().split("T")[0]}
+          />
+        </label>
+      </div>
 
-      <label className="flex flex-col gap-1">
-        <Text as="span" variant="body" size="sm">
-          Data:
-        </Text>
-        <Input
-          name="date"
-          type="date"
-          required
-          defaultValue={new Date().toISOString().split("T")[0]}
-        />
-      </label>
-
-      <div className="flex gap-3 mt-2">
-        <Button
-          label="Cancelar"
-          variant="secondary"
-          type="button"
-          onClick={onCancel}
-          className="flex-1 h-10"
-        />
+      <div className="flex gap-3 pt-1">
+        <Button label="Cancelar" variant="secondary" size="lg" onClick={onCancel} className="flex-1" />
         <Button
           label={isLoading ? "Salvando..." : "Salvar"}
-          variant="primary"
           type="submit"
+          size="lg"
           disabled={isLoading}
-          className="flex-1 h-10"
+          className="flex-[2]"
         />
       </div>
     </form>

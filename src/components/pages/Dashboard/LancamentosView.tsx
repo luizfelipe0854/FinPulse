@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Plus, FileDown } from "lucide-react";
-import { Button, Text } from "@/components/atoms";
+import { FileDown } from "lucide-react";
 import { FilterBar, type TipoFiltro } from "@/components/molecules/FilterBar";
 import { TransactionList } from "@/components/organisms/TransactionList";
 import type { ICentro, ITransaction } from "@/services/firebase/firestore";
 import { exportTransactionsToExcel } from "@/utils/exportTransactions";
+import { formatCurrency } from "@/utils/formatters";
+import { PageTitle } from "./PageTitle";
 
 type LancamentosViewProps = {
   transactions: ITransaction[];
@@ -51,41 +52,30 @@ export const LancamentosView = ({
     setCentroFiltro("todos");
   }
 
+  const entrou = transacoesFiltradas
+    .filter((t) => t.type === "entrada")
+    .reduce((a, t) => a + t.amount, 0);
+  const saiu = transacoesFiltradas
+    .filter((t) => t.type === "saida")
+    .reduce((a, t) => a + t.amount, 0);
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Text as="h2" variant="title" size="lg">
-          <span className="sm:hidden">Lançamentos</span>
-          <span className="hidden sm:inline">Todos os lançamentos</span>
-        </Text>
-        <div className="flex gap-2 items-center">
+    <div className="flex flex-col gap-5">
+      <PageTitle
+        title="Extrato"
+        action={{ label: "Novo lançamento", onClick: onNewTransaction }}
+        extra={
           <button
             type="button"
             onClick={() => exportTransactionsToExcel(transacoesFiltradas)}
-            className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors cursor-pointer"
-            aria-label="Exportar transações"
+            className="size-10 rounded-full bg-surface shadow-card text-muted hover:text-primary flex items-center justify-center cursor-pointer transition-colors"
+            aria-label="Exportar para Excel"
+            title="Exportar para Excel"
           >
-            <FileDown size={20} />
+            <FileDown size={18} />
           </button>
-          {/* Mobile: apenas ícone */}
-          <button
-            type="button"
-            onClick={onNewTransaction}
-            className="sm:hidden h-9 w-9 rounded-lg bg-[var(--primary)] flex items-center justify-center text-[var(--surface)] cursor-pointer hover:bg-[var(--primary)]/90 transition-colors"
-            aria-label="Nova transação"
-          >
-            <Plus size={18} />
-          </button>
-          {/* Desktop: botão completo */}
-          <Button
-            label="Nova transação"
-            icon={<Plus size={16} />}
-            variant="primary"
-            className="hidden sm:flex h-9 text-sm"
-            onClick={onNewTransaction}
-          />
-        </div>
-      </div>
+        }
+      />
 
       <FilterBar
         tipoFiltro={tipoFiltro}
@@ -100,11 +90,29 @@ export const LancamentosView = ({
         onClear={handleClearFilters}
       />
 
+      {!isLoading && transacoesFiltradas.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-surface shadow-card px-4 py-3">
+            <p className="text-[13px] font-medium text-muted">Entrou</p>
+            <p className="money text-lg font-semibold text-success">{formatCurrency(entrou)}</p>
+          </div>
+          <div className="rounded-2xl bg-surface shadow-card px-4 py-3">
+            <p className="text-[13px] font-medium text-muted">Saiu</p>
+            <p className="money text-lg font-semibold text-ink">{formatCurrency(saiu)}</p>
+          </div>
+        </div>
+      )}
+
       <TransactionList
         transactions={transacoesFiltradas}
+        centros={centros}
         isLoading={isLoading}
         onDelete={onDelete}
+        groupByDay
         emptyText="Nenhum lançamento encontrado"
+        emptyDescription={
+          algumFiltroAtivo ? "Tente limpar os filtros." : "Seus lançamentos vão aparecer aqui."
+        }
       />
     </div>
   );

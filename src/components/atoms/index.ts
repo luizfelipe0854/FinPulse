@@ -6,3 +6,4 @@ export * from "./Check";
 export * from "./Icon";
 export * from "./Input";
 export * from "./Select";
+export * from "./IconTile";
